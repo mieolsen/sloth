@@ -84,52 +84,62 @@ var slotMachine = function (el, track) { //create slotMachine function
         }
     };
 
-    slot.endSpin = function () { // create function called slot.endSpin
 
-        slot.options.endNum = slot.randomRange(1, slot.liCount); //set the result to be random between 1 and 7 (the amount of pictures)
+// nået hertil!!!!!-------------------------------------------------------------------------------------------------------------------------
+    slot.endSpin = function () {
+        if (slot.options.endNum == 0) {
+            slot.options.endNum = slot.randomRange(1, slot.liCount);
+        }
 
+        // Error handling if endNum is out of range
+        if (slot.options.endNum < 0 || slot.options.endNum > slot.liCount) {
+            slot.options.endNum = 1;
+        }
 
-        var finalPos = -((slot.liHeight * slot.options.endNum) - slot.liHeight); //calculate the final position
-        var finalSpeed = ((slot.spinSpeed * 1.5) * (slot.liCount)) / slot.options.endNum; // calculate a different speed before result
+        var finalPos = -((slot.liHeight * slot.options.endNum) - slot.liHeight);
+        var finalSpeed = ((slot.spinSpeed * 1.5) * (slot.liCount)) / slot.options.endNum;
 
         slot.$el
             .css('top', -slot.listHeight)
             .animate({'top': finalPos}, finalSpeed, 'swing', function () {
                 slot.$el.find('li').last().remove(); // Remove the cloned row
 
-                slot.endAnimation(slot.options.endNum); //parse endnum to endAnimation function
+                slot.endAnimation(slot.options.endNum);
+                if ($.isFunction(slot.options.onEnd)) {
+                    slot.options.onEnd(slot.options.endNum);
+                }
 
-
-                // onFinish when every element is finished animation
+                // onFinish is every element is finished animation
                 if (startSeqs['mainSeq' + track.mainSeq]['totalSpinning'] == 0) { //when totalspinning=0 (nothing moving anymore)
-
+                    var totalNum = '';
                     var winning = true;
                     var lastNum = 0;
                     var subSeqs_counter = 0;
 
-                    $.each(startSeqs['mainSeq' + track.mainSeq], function(index, subSeqs) { //jquery loop
-                        if (typeof subSeqs == 'object') { //checks if subSegs is an object otherwise it skip the loop
-                            if ( subSeqs_counter> 0 && winning == true) { //skip first loop to have something to compare, and skips if already lost
-                              if (lastNum != subSeqs['endNum'])  // if two images arent the same you loose
+                    $.each(startSeqs['mainSeq' + track.mainSeq], function(index, subSeqs) {
+                        if (typeof subSeqs == 'object') {
+                            if ( subSeqs_counter> 0 && winning == true) {
+                              if (lastNum != subSeqs['endNum'])
                               {
                                 winning = false;
                               }
                             }
-                        lastNum = subSeqs['endNum'];// lastnum =endnum on that row of images
-                        subSeqs_counter++; //counts a loop
+                        lastNum = subSeqs['endNum'];
+                        subSeqs_counter++;
                         }
                     });
 
-                   DB_Winner_Write(winning); //runs database write function when done with loop
+                   DB_Winner_Write(winning);
                 }
             });
     }
 
     slot.endAnimation = function(endNum) {
         startSeqs['mainSeq' + track.mainSeq]['totalSpinning']--; //count totalspinning down
+        startSeqs['mainSeq' + track.mainSeq]['subSeq' + track.subSeq]['endNum'] = endNum;
     }
 
-    slot.randomRange = function (low, high) { //function used to select random result
+    slot.randomRange = function (low, high) {
         return Math.floor(Math.random() * (1 + high - low)) + low;
     };
 
@@ -141,7 +151,7 @@ function DB_Winner_Write(won) {
   firebase.database().ref("winner").push({won:won});
 }
 
-// test button write to database (skal slettes)
+// test button write to database
 function test() {
   firebase.database().ref("Payment").push({Paid:true});
 }
