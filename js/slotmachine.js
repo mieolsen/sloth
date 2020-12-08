@@ -88,7 +88,7 @@ var slotMachine = function (el, track) { //create slotMachine function
 // nået hertil!!!!!-------------------------------------------------------------------------------------------------------------------------
     slot.endSpin = function () {
         if (slot.options.endNum == 0) {
-            slot.options.endNum = slot.randomRange(1,2); //slot.liCount);
+            slot.options.endNum = slot.randomRange(1, slot.liCount);
         }
 
         // Error handling if endNum is out of range
