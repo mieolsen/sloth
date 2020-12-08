@@ -158,6 +158,6 @@ function DB_Winner_Write(won) {
 // }
 
 // test start when new input enters database
-firebase.database().ref('inputcode1').on('value',(snap)=>{
+firebase.database().ref('Payment').on('value',(snap)=>{
   $('#example6 ul').playSpin();
   });
