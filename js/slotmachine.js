@@ -88,7 +88,7 @@ var slotMachine = function (el, track) { //create slotMachine function
 // nået hertil!!!!!-------------------------------------------------------------------------------------------------------------------------
     slot.endSpin = function () {
         if (slot.options.endNum == 0) {
-            slot.options.endNum = slot.randomRange(1, slot.liCount);
+            slot.options.endNum = slot.randomRange(1,2); //slot.liCount);
         }
 
         // Error handling if endNum is out of range
@@ -122,6 +122,7 @@ var slotMachine = function (el, track) { //create slotMachine function
                               if (lastNum != subSeqs['endNum'])
                               {
                                 winning = false;
+
                               }
                             }
                         lastNum = subSeqs['endNum'];
@@ -152,11 +153,11 @@ function DB_Winner_Write(won) {
 }
 
 // test button write to database
-function test() {
-  firebase.database().ref("Payment").push({Paid:true});
-}
+// function test() {
+//   firebase.database().ref("Payment").push({Paid:true});
+// }
 
-// test start wehen new input enters database
-firebase.database().ref('Payment').on('value',(snap)=>{
+// test start when new input enters database
+firebase.database().ref('inputcode1').on('value',(snap)=>{
   $('#example6 ul').playSpin();
   });

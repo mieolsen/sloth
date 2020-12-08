@@ -29,7 +29,7 @@ body {
     vertical-align: top;
 }
 #btn-example6{
-  display: none;
+  /*display: none;*/
 }
 @media screen and (max-width: 1200px) {
     .slotwrapper {
